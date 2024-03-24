@@ -3,9 +3,6 @@ package com.luv2code.springboot.securitydemo.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,11 +20,15 @@ public class DemoSecurityConfig {
         return new InMemoryUserDetailsManager(john,mary,susan);
     }*/
 
-    //use users and roles from database
+    //use users and roles from database custom table
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource){
-        //no more hard coding spring will fetch users and roles from database automatically
-        return new JdbcUserDetailsManager(dataSource);
+
+        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+        userDetailsManager.setUsersByUsernameQuery("select * from members where user_id=?");
+        userDetailsManager.setAuthoritiesByUsernameQuery("select * from roles where user_id=?");
+        return userDetailsManager;
+
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
