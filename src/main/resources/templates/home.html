@@ -15,7 +15,7 @@
         User: <span sec:authentication="principal.username"></span>
         Role(s): <span sec:authentication="principal.authorities"></span>
     </p>
-    
+
     <div sec:authorize="hasRole('MANAGER')">
         <!-- Add a link to point to /leaders ... this is for the managers-->
         <p>
